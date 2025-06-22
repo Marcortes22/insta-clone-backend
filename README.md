@@ -50,11 +50,6 @@ This is the backend for the Instagram clone, built with NestJS and GraphQL. It h
 - Push notifications (likes, comments, messages, follows)
 - Notification preferences
 
-### 🧾 Reports
-
-- Submit reports for posts, users, comments
-- Report resolution by moderators
-
 ---
 
 ## ⚙️ Admin Modules
