@@ -29,6 +29,7 @@ module.exports = defineConfig([
         ...globals.jest,
       },
     },
+    ignores: ['eslint.config.js', 'node_modules', 'dist'],
 
     plugins: {
       '@typescript-eslint': typescriptEslintEslintPlugin,
