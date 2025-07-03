@@ -1,7 +1,7 @@
 const { defineConfig } = require('eslint/config');
-
 const tsParser = require('@typescript-eslint/parser');
 const typescriptEslintEslintPlugin = require('@typescript-eslint/eslint-plugin');
+const unusedImports = require('eslint-plugin-unused-imports');
 const globals = require('globals');
 const js = require('@eslint/js');
 
@@ -29,10 +29,18 @@ module.exports = defineConfig([
         ...globals.jest,
       },
     },
-    ignores: ['eslint.config.js', 'node_modules', 'dist'],
+    ignores: [
+      'eslint.config.js',
+      'node_modules',
+      'dist',
+      'src/shared/prismagraphql',
+      'src/schema.gql',
+      'pnpm-workspace.yaml',
+    ],
 
     plugins: {
       '@typescript-eslint': typescriptEslintEslintPlugin,
+      'unused-imports': unusedImports,
     },
 
     extends: compat.extends(
@@ -44,7 +52,8 @@ module.exports = defineConfig([
       '@typescript-eslint/interface-name-prefix': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
+      'unused-imports/no-unused-imports': 'error',
+      '@typescript-eslint/no-explicit-any': 'warn',
       'no-console': ['error', { allow: ['warn', 'error'] }],
       'no-debugger': 'error',
     },

@@ -1,0 +1,358 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator nestgraphql {
+  provider = "node node_modules/prisma-nestjs-graphql"
+  output   = "../src/shared/prismagraphql"
+  reExport = Directories
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model action_type {
+  id                    Int                     @id @unique(map: "UQ_id") @default(autoincrement())
+  name                  String                  @db.VarChar(100)
+  comment_audit_log     comment_audit_log[]
+  login_history         login_history[]
+  post_audit_log        post_audit_log[]
+  user_audit_log        user_audit_log[]
+  user_follow_audit_log user_follow_audit_log[]
+}
+
+model attachment_type {
+  id                 Int                  @id @unique(map: "UQ_id") @default(autoincrement())
+  name               String               @db.VarChar(100)
+  message_attachment message_attachment[]
+}
+
+model comment {
+  id                Int       @id @unique(map: "UQ_id") @default(autoincrement())
+  content           String    @db.VarChar(1000)
+  parent_commnet_id Int?
+  created_at        DateTime  @db.Timestamp(0)
+  updated_at        DateTime? @db.Timestamp(0)
+  deleted_At        DateTime? @db.Timestamp(0)
+  post_id           Int
+  user_id           Int
+  post              post      @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_post_TO_comment")
+  user              user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_TO_comment")
+
+  @@index([post_id], map: "FK_post_TO_comment")
+  @@index([user_id], map: "FK_user_TO_comment")
+}
+
+model comment_audit_log {
+  id             Int         @id @unique(map: "UQ_id") @default(autoincrement())
+  made_by        Int
+  old_data       Json?
+  new_data       Json?
+  created_at     DateTime    @db.Timestamp(0)
+  action_type_id Int
+  action_type    action_type @relation(fields: [action_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_type_TO_comment_audit_log")
+
+  @@index([action_type_id], map: "FK_action_type_TO_comment_audit_log")
+}
+
+model conversation {
+  id                Int                 @id @unique(map: "UQ_id") @default(autoincrement())
+  is_group          Boolean
+  created_At        DateTime            @db.Timestamp(0)
+  deleted_At        DateTime?           @db.Timestamp(0)
+  message           message[]
+  user_conversation user_conversation[]
+}
+
+model gender {
+  id   Int    @id @unique(map: "UQ_id") @default(autoincrement())
+  name String @unique @db.VarChar(100)
+  user user[]
+}
+
+model liked_post {
+  id         Int      @id @unique(map: "UQ_id") @default(autoincrement())
+  created_at DateTime @db.Timestamp(0)
+  post_id    Int
+  user_id    Int
+  post       post     @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_post_TO_liked_post")
+  user       user     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_TO_liked_post")
+
+  @@index([post_id], map: "FK_post_TO_liked_post")
+  @@index([user_id], map: "FK_user_TO_liked_post")
+}
+
+model location {
+  id         Int      @id @unique(map: "UQ_id") @default(autoincrement())
+  name       String?  @db.VarChar(100)
+  latitude   Decimal  @db.Decimal(10, 0)
+  longitude  Decimal  @db.Decimal(10, 0)
+  address    String?  @db.VarChar(255)
+  created_at DateTime @db.Timestamp(0)
+  post       post[]
+}
+
+model login_history {
+  id             Int         @id @unique(map: "UQ_id") @default(autoincrement())
+  made_by        Int
+  ip_address     String?     @db.VarChar(150)
+  device         String?     @db.VarChar(150)
+  created_at     DateTime    @db.Timestamp(0)
+  action_type_id Int
+  action_type    action_type @relation(fields: [action_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_type_TO_login_history")
+
+  @@index([action_type_id], map: "FK_action_type_TO_login_history")
+}
+
+model message {
+  id                 Int                  @id @unique(map: "UQ_id") @default(autoincrement())
+  content            String               @db.VarChar(1000)
+  read_at            DateTime?            @db.Timestamp(0)
+  created_at         DateTime             @db.Timestamp(0)
+  updated_at         DateTime?            @db.Timestamp(0)
+  deleted_at         DateTime?            @db.Timestamp(0)
+  conversation_id    Int
+  conversation       conversation         @relation(fields: [conversation_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_conversation_TO_message")
+  message_attachment message_attachment[]
+
+  @@index([conversation_id], map: "FK_conversation_TO_message")
+}
+
+model message_attachment {
+  id                 Int             @id @unique(map: "UQ_id") @default(autoincrement())
+  attachment_url     String          @db.VarChar(2083)
+  created_at         DateTime        @db.Timestamp(0)
+  attachment_type_id Int
+  message_id         Int
+  attachment_type    attachment_type @relation(fields: [attachment_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_attachment_type_TO_message_attachment")
+  message            message         @relation(fields: [message_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_message_TO_message_attachment")
+
+  @@index([attachment_type_id], map: "FK_attachment_type_TO_message_attachment")
+  @@index([message_id], map: "FK_message_TO_message_attachment")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model notification {
+  id                   Int               @id @unique(map: "UQ_id") @default(autoincrement())
+  message              String            @db.VarChar(1000)
+  is_read              Boolean
+  type_id              String            @db.VarChar(255)
+  created_at           DateTime?         @db.Timestamp(0)
+  notification_type_id Int
+  user_id              Int
+  notification_type    notification_type @relation(fields: [notification_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_notification_type_TO_notification")
+  user                 user              @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_TO_notification")
+
+  @@index([notification_type_id], map: "FK_notification_type_TO_notification")
+  @@index([user_id], map: "FK_user_TO_notification")
+}
+
+model notification_type {
+  id           Int            @id @unique(map: "UQ_id") @default(autoincrement())
+  name         String         @db.VarChar(100)
+  description  String?        @db.VarChar(500)
+  notification notification[]
+}
+
+model post {
+  id            Int             @id @unique(map: "UQ_id") @default(autoincrement())
+  caption       String?         @db.VarChar(500)
+  is_archived   Boolean
+  created_at    DateTime        @db.Timestamp(0)
+  updated_at    DateTime?       @db.Timestamp(0)
+  deleted_at    DateTime?       @db.Timestamp(0)
+  user_id       Int
+  location_id   Int
+  comment       comment[]
+  liked_post    liked_post[]
+  location      location        @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_location_TO_post")
+  user          user            @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_TO_post")
+  post_media    post_media[]
+  post_user_tag post_user_tag[]
+  reported_post reported_post[]
+  saved_post    saved_post[]
+
+  @@index([location_id], map: "FK_location_TO_post")
+  @@index([user_id], map: "FK_user_TO_post")
+}
+
+model post_audit_log {
+  id             Int         @id @unique(map: "UQ_id") @default(autoincrement())
+  made_by        Int
+  old_data       Json?
+  new_data       Json?
+  created_at     DateTime    @db.Timestamp(0)
+  action_type_id Int
+  action_type    action_type @relation(fields: [action_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_type_TO_post_audit_log")
+
+  @@index([action_type_id], map: "FK_action_type_TO_post_audit_log")
+}
+
+model post_media {
+  id         Int       @id @unique(map: "UQ_id") @default(autoincrement())
+  image_url  String    @db.VarChar(2083)
+  created_at DateTime  @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+  post_id    Int
+  post       post      @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_post_TO_post_media")
+
+  @@index([post_id], map: "FK_post_TO_post_media")
+}
+
+model post_user_tag {
+  id         Int       @id @unique(map: "UQ_id") @default(autoincrement())
+  created_At DateTime  @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+  post_id    Int
+  user_id    Int
+  post       post      @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_post_TO_post_user_tag")
+  user       user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_TO_post_user_tag")
+
+  @@index([post_id], map: "FK_post_TO_post_user_tag")
+  @@index([user_id], map: "FK_user_TO_post_user_tag")
+}
+
+model report_reason {
+  id            Int             @id @unique(map: "UQ_id") @default(autoincrement())
+  reason        String          @db.VarChar(500)
+  description   String?         @db.VarChar(500)
+  reported_post reported_post[]
+}
+
+model reported_post {
+  id               Int           @id @unique(map: "UQ_id") @default(autoincrement())
+  comment          String        @db.VarChar(500)
+  created_at       DateTime?     @db.Timestamp(0)
+  report_reason_id Int
+  user_id          Int
+  post_id          Int
+  post             post          @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_post_TO_reported_post")
+  report_reason    report_reason @relation(fields: [report_reason_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_report_reason_TO_reported_post")
+  user             user          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_TO_reported_post")
+
+  @@index([post_id], map: "FK_post_TO_reported_post")
+  @@index([report_reason_id], map: "FK_report_reason_TO_reported_post")
+  @@index([user_id], map: "FK_user_TO_reported_post")
+}
+
+model role {
+  id          Int         @id @unique(map: "UQ_id") @default(autoincrement())
+  name        String      @db.VarChar(100)
+  description String?     @db.VarChar(500)
+  user_role   user_role[]
+}
+
+model saved_post {
+  id         Int      @id @unique(map: "UQ_id") @default(autoincrement())
+  created_at DateTime @db.Timestamp(0)
+  user_id    Int
+  post_id    Int
+  post       post     @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_post_TO_saved_post")
+  user       user     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_TO_saved_post")
+
+  @@index([post_id], map: "FK_post_TO_saved_post")
+  @@index([user_id], map: "FK_user_TO_saved_post")
+}
+
+model status {
+  id   Int    @id @unique(map: "UQ_id") @default(autoincrement())
+  name String @db.VarChar(100)
+  user user[]
+}
+
+model user {
+  id                                        Int                 @id @unique(map: "UQ_id")
+  username                                  String              @db.VarChar(50)
+  fullname                                  String              @db.VarChar(100)
+  password_hash                             String              @db.VarChar(255)
+  email                                     String              @unique(map: "UQ_email") @db.VarChar(150)
+  bio                                       String?             @db.VarChar(500)
+  profile_picture_url                       String?             @db.VarChar(2083)
+  webside_url                               String?             @db.VarChar(2083)
+  is_privated                               Boolean
+  created_at                                DateTime            @db.Timestamp(0)
+  updated_at                                DateTime?           @db.Timestamp(0)
+  deleted_at                                DateTime?           @db.Timestamp(0)
+  status_id                                 Int
+  gender_id                                 Int
+  comment                                   comment[]
+  liked_post                                liked_post[]
+  notification                              notification[]
+  post                                      post[]
+  post_user_tag                             post_user_tag[]
+  reported_post                             reported_post[]
+  saved_post                                saved_post[]
+  gender                                    gender              @relation(fields: [gender_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_gender_TO_user")
+  status                                    status              @relation(fields: [status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_status_TO_user")
+  user_conversation                         user_conversation[]
+  user_follow_user_follow_follower_idTouser user_follow[]       @relation("user_follow_follower_idTouser")
+  user_follow_user_follow_followed_idTouser user_follow[]       @relation("user_follow_followed_idTouser")
+  user_role                                 user_role[]
+
+  @@index([gender_id], map: "FK_gender_TO_user")
+  @@index([status_id], map: "FK_status_TO_user")
+}
+
+model user_audit_log {
+  id             Int         @id @unique(map: "UQ_id") @default(autoincrement())
+  made_by        Int
+  old_data       Json?
+  new_data       Json?
+  created_at     DateTime    @db.Timestamp(0)
+  action_type_id Int
+  action_type    action_type @relation(fields: [action_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_type_TO_user_audit_log")
+
+  @@index([action_type_id], map: "FK_action_type_TO_user_audit_log")
+}
+
+model user_conversation {
+  id              Int          @id @unique(map: "UQ_is") @default(autoincrement())
+  created_at      DateTime     @db.Timestamp(0)
+  usser_id        Int
+  conversation_id Int
+  conversation    conversation @relation(fields: [conversation_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_conversation_TO_user_conversation")
+  user            user         @relation(fields: [usser_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_TO_user_conversation")
+
+  @@index([conversation_id], map: "FK_conversation_TO_user_conversation")
+  @@index([usser_id], map: "FK_user_TO_user_conversation")
+}
+
+model user_follow {
+  id                                 Int      @id @unique(map: "UQ_id") @default(autoincrement())
+  created_at                         DateTime @db.Timestamp(0)
+  follower_id                        Int
+  followed_id                        Int
+  user_user_follow_follower_idTouser user     @relation("user_follow_follower_idTouser", fields: [follower_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_TO_user_follow")
+  user_user_follow_followed_idTouser user     @relation("user_follow_followed_idTouser", fields: [followed_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_TO_user_follow1")
+
+  @@index([follower_id], map: "FK_user_TO_user_follow")
+  @@index([followed_id], map: "FK_user_TO_user_follow1")
+}
+
+model user_follow_audit_log {
+  id             Int         @id @unique(map: "UQ_id") @default(autoincrement())
+  made_by        Int
+  follower_id    Int
+  followed       Int
+  old_data       Json?
+  new_data       Json?
+  created_at     DateTime    @db.Timestamp(0)
+  action_type_id Int
+  action_type    action_type @relation(fields: [action_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_type_TO_user_follow_audit_log")
+
+  @@index([action_type_id], map: "FK_action_type_TO_user_follow_audit_log")
+}
+
+model user_role {
+  id         Int      @id @unique(map: "UQ_id") @default(autoincrement())
+  created_at DateTime @db.Timestamp(0)
+  role_id    Int
+  user_id    Int
+  role       role     @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_role_TO_user_role")
+  user       user     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_TO_user_role")
+
+  @@index([role_id], map: "FK_role_TO_user_role")
+  @@index([user_id], map: "FK_user_TO_user_role")
+}

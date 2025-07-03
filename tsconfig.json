@@ -10,6 +10,15 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "@app/*": ["src/app/*"],
+      "@auth/*": ["src/auth/*"],
+      "@modules/*": ["src/modules/*"],
+      "@prisma/*": ["src/prisma/*"],
+      "@shared/*": ["src/shared/*"],
+      "@utils/*": ["src/utils/*"]
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
