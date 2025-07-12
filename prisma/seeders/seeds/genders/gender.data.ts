@@ -1,6 +1,6 @@
-import { genderCreateInput } from '@/shared/prismagraphql/gender';
+import { Prisma } from '@prisma/client';
 
-export const genders: genderCreateInput[] = [
+export const genders: Prisma.genderCreateInput[] = [
   {
     name: 'Male',
   },

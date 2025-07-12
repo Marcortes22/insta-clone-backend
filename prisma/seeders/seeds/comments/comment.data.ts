@@ -1,6 +1,6 @@
-import { commentCreateInput } from '@/shared/prismagraphql/comment';
+import { Prisma } from '@prisma/client';
 
-export const comments: commentCreateInput[] = [
+export const comments: Prisma.commentCreateInput[] = [
   {
     content: 'Amazing shot! 📸',
     created_at: new Date(),

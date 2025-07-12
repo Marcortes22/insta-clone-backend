@@ -1,6 +1,6 @@
-import { attachment_typeCreateInput } from '@/shared/prismagraphql/attachment-type';
+import { Prisma } from '@prisma/client';
 
-export const attachmentTypes: attachment_typeCreateInput[] = [
+export const attachmentTypes: Prisma.attachment_typeCreateInput[] = [
   {
     name: 'IMAGE',
   },

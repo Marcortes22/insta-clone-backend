@@ -1,6 +1,6 @@
-import { user_roleCreateInput } from '@/shared/prismagraphql/user-role';
+import { Prisma } from '@prisma/client';
 
-export const userRoles: user_roleCreateInput[] = [
+export const userRoles: Prisma.user_roleCreateInput[] = [
   {
     created_at: new Date(),
     role: {

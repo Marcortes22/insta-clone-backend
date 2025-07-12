@@ -1,6 +1,6 @@
-import { userCreateInput } from '@/shared/prismagraphql/user';
+import { Prisma } from '@prisma/client';
 
-export const users: userCreateInput[] = [
+export const users: Prisma.userCreateInput[] = [
   {
     id: 1,
     username: 'john_doe',

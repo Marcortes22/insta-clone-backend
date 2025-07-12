@@ -1,6 +1,6 @@
-import { postCreateInput } from '@/shared/prismagraphql/post';
+import { Prisma } from '@prisma/client';
 
-export const posts: postCreateInput[] = [
+export const posts: Prisma.postCreateInput[] = [
   {
     caption: 'Beautiful sunset at the beach 🌅',
     is_archived: false,

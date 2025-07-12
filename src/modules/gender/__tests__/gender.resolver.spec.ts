@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { GenderResolver } from './gender.resolver';
-import { GenderService } from './gender.service';
+import { GenderResolver } from '../gender.resolver';
+import { GenderService } from '../gender.service';
 
 describe('GenderResolver', () => {
   let resolver: GenderResolver;

@@ -1,6 +1,6 @@
-import { notification_typeCreateInput } from '@/shared/prismagraphql/notification-type';
+import { Prisma } from '@prisma/client';
 
-export const notificationTypes: notification_typeCreateInput[] = [
+export const notificationTypes: Prisma.notification_typeCreateInput[] = [
   {
     name: 'LIKE',
     description: 'Someone liked your post',

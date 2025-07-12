@@ -1,6 +1,6 @@
-import { user_followCreateInput } from '@/shared/prismagraphql/user-follow';
+import { Prisma } from '@prisma/client';
 
-export const userFollows: user_followCreateInput[] = [
+export const userFollows: Prisma.user_followCreateInput[] = [
   {
     created_at: new Date(),
     user_user_follow_follower_idTouser: {

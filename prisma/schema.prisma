@@ -3,9 +3,10 @@ generator client {
 }
 
 generator nestgraphql {
-  provider = "node node_modules/prisma-nestjs-graphql"
-  output   = "../src/shared/prismagraphql"
-  reExport = Directories
+  provider           = "node node_modules/prisma-nestjs-graphql"
+  output             = "../src/shared/prismagraphql"
+  reExport           = Directories
+  emitAggregateInput = true
 }
 
 datasource db {
@@ -33,7 +34,7 @@ model comment {
   id                Int       @id @unique(map: "UQ_id") @default(autoincrement())
   content           String    @db.VarChar(1000)
   parent_commnet_id Int?
-  created_at        DateTime  @db.Timestamp(0)
+  created_at        DateTime  @default(now()) @db.Timestamp(0)
   updated_at        DateTime? @db.Timestamp(0)
   deleted_At        DateTime? @db.Timestamp(0)
   post_id           Int
@@ -50,7 +51,7 @@ model comment_audit_log {
   made_by        Int
   old_data       Json?
   new_data       Json?
-  created_at     DateTime    @db.Timestamp(0)
+  created_at     DateTime    @default(now()) @db.Timestamp(0)
   action_type_id Int
   action_type    action_type @relation(fields: [action_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_type_TO_comment_audit_log")
 
@@ -60,8 +61,8 @@ model comment_audit_log {
 model conversation {
   id                Int                 @id @unique(map: "UQ_id") @default(autoincrement())
   is_group          Boolean
-  created_At        DateTime            @db.Timestamp(0)
-  deleted_At        DateTime?           @db.Timestamp(0)
+  created_at        DateTime            @default(now()) @db.Timestamp(0)
+  deleted_at        DateTime?           @db.Timestamp(0)
   message           message[]
   user_conversation user_conversation[]
 }
@@ -74,7 +75,7 @@ model gender {
 
 model liked_post {
   id         Int      @id @unique(map: "UQ_id") @default(autoincrement())
-  created_at DateTime @db.Timestamp(0)
+  created_at DateTime @default(now()) @db.Timestamp(0)
   post_id    Int
   user_id    Int
   post       post     @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_post_TO_liked_post")
@@ -90,7 +91,7 @@ model location {
   latitude   Decimal  @db.Decimal(10, 0)
   longitude  Decimal  @db.Decimal(10, 0)
   address    String?  @db.VarChar(255)
-  created_at DateTime @db.Timestamp(0)
+  created_at DateTime @default(now()) @db.Timestamp(0)
   post       post[]
 }
 
@@ -99,7 +100,7 @@ model login_history {
   made_by        Int
   ip_address     String?     @db.VarChar(150)
   device         String?     @db.VarChar(150)
-  created_at     DateTime    @db.Timestamp(0)
+  created_at     DateTime    @default(now()) @db.Timestamp(0)
   action_type_id Int
   action_type    action_type @relation(fields: [action_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_type_TO_login_history")
 
@@ -110,7 +111,7 @@ model message {
   id                 Int                  @id @unique(map: "UQ_id") @default(autoincrement())
   content            String               @db.VarChar(1000)
   read_at            DateTime?            @db.Timestamp(0)
-  created_at         DateTime             @db.Timestamp(0)
+  created_at         DateTime             @default(now()) @db.Timestamp(0)
   updated_at         DateTime?            @db.Timestamp(0)
   deleted_at         DateTime?            @db.Timestamp(0)
   conversation_id    Int
@@ -123,7 +124,7 @@ model message {
 model message_attachment {
   id                 Int             @id @unique(map: "UQ_id") @default(autoincrement())
   attachment_url     String          @db.VarChar(2083)
-  created_at         DateTime        @db.Timestamp(0)
+  created_at         DateTime        @default(now()) @db.Timestamp(0)
   attachment_type_id Int
   message_id         Int
   attachment_type    attachment_type @relation(fields: [attachment_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_attachment_type_TO_message_attachment")
@@ -160,7 +161,7 @@ model post {
   id            Int             @id @unique(map: "UQ_id") @default(autoincrement())
   caption       String?         @db.VarChar(500)
   is_archived   Boolean
-  created_at    DateTime        @db.Timestamp(0)
+  created_at    DateTime        @default(now()) @db.Timestamp(0)
   updated_at    DateTime?       @db.Timestamp(0)
   deleted_at    DateTime?       @db.Timestamp(0)
   user_id       Int
@@ -183,7 +184,7 @@ model post_audit_log {
   made_by        Int
   old_data       Json?
   new_data       Json?
-  created_at     DateTime    @db.Timestamp(0)
+  created_at     DateTime    @default(now()) @db.Timestamp(0)
   action_type_id Int
   action_type    action_type @relation(fields: [action_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_type_TO_post_audit_log")
 
@@ -193,7 +194,7 @@ model post_audit_log {
 model post_media {
   id         Int       @id @unique(map: "UQ_id") @default(autoincrement())
   image_url  String    @db.VarChar(2083)
-  created_at DateTime  @db.Timestamp(0)
+  created_at DateTime  @default(now()) @db.Timestamp(0)
   deleted_at DateTime? @db.Timestamp(0)
   post_id    Int
   post       post      @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_post_TO_post_media")
@@ -203,7 +204,7 @@ model post_media {
 
 model post_user_tag {
   id         Int       @id @unique(map: "UQ_id") @default(autoincrement())
-  created_At DateTime  @db.Timestamp(0)
+  created_At DateTime  @default(now()) @db.Timestamp(0)
   deleted_at DateTime? @db.Timestamp(0)
   post_id    Int
   user_id    Int
@@ -246,7 +247,7 @@ model role {
 
 model saved_post {
   id         Int      @id @unique(map: "UQ_id") @default(autoincrement())
-  created_at DateTime @db.Timestamp(0)
+  created_at DateTime @default(now()) @db.Timestamp(0)
   user_id    Int
   post_id    Int
   post       post     @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_post_TO_saved_post")
@@ -272,7 +273,7 @@ model user {
   profile_picture_url                       String?             @db.VarChar(2083)
   webside_url                               String?             @db.VarChar(2083)
   is_privated                               Boolean
-  created_at                                DateTime            @db.Timestamp(0)
+  created_at                                DateTime            @default(now()) @db.Timestamp(0)
   updated_at                                DateTime?           @db.Timestamp(0)
   deleted_at                                DateTime?           @db.Timestamp(0)
   status_id                                 Int
@@ -300,7 +301,7 @@ model user_audit_log {
   made_by        Int
   old_data       Json?
   new_data       Json?
-  created_at     DateTime    @db.Timestamp(0)
+  created_at     DateTime    @default(now()) @db.Timestamp(0)
   action_type_id Int
   action_type    action_type @relation(fields: [action_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_type_TO_user_audit_log")
 
@@ -309,7 +310,7 @@ model user_audit_log {
 
 model user_conversation {
   id              Int          @id @unique(map: "UQ_is") @default(autoincrement())
-  created_at      DateTime     @db.Timestamp(0)
+  created_at      DateTime     @default(now()) @db.Timestamp(0)
   usser_id        Int
   conversation_id Int
   conversation    conversation @relation(fields: [conversation_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_conversation_TO_user_conversation")
@@ -321,7 +322,7 @@ model user_conversation {
 
 model user_follow {
   id                                 Int      @id @unique(map: "UQ_id") @default(autoincrement())
-  created_at                         DateTime @db.Timestamp(0)
+  created_at                         DateTime @default(now()) @db.Timestamp(0)
   follower_id                        Int
   followed_id                        Int
   user_user_follow_follower_idTouser user     @relation("user_follow_follower_idTouser", fields: [follower_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_user_TO_user_follow")
@@ -338,7 +339,7 @@ model user_follow_audit_log {
   followed       Int
   old_data       Json?
   new_data       Json?
-  created_at     DateTime    @db.Timestamp(0)
+  created_at     DateTime    @default(now()) @db.Timestamp(0)
   action_type_id Int
   action_type    action_type @relation(fields: [action_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_type_TO_user_follow_audit_log")
 
@@ -347,7 +348,7 @@ model user_follow_audit_log {
 
 model user_role {
   id         Int      @id @unique(map: "UQ_id") @default(autoincrement())
-  created_at DateTime @db.Timestamp(0)
+  created_at DateTime @default(now()) @db.Timestamp(0)
   role_id    Int
   user_id    Int
   role       role     @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_role_TO_user_role")
