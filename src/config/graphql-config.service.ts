@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { GqlOptionsFactory } from '@nestjs/graphql';
 import { ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
+import { GraphQLError } from 'graphql';
 
 @Injectable()
 export class GraphqlConfigService implements GqlOptionsFactory {
@@ -23,13 +24,23 @@ export class GraphqlConfigService implements GqlOptionsFactory {
         user: req.user,
       }),
 
-      formatError: (error) => {
-        const originalError = error.extensions?.originalError as Error;
-
-        return {
-          message: originalError?.message || error.message,
-          code: error.extensions?.code || 'INTERNAL_SERVER_ERROR',
+      formatError: (error: GraphQLError) => {
+        const baseFormattedError = {
+          message: error.message,
+          code: error.extensions?.code || 'INTERNAL_ERROR',
         };
+
+        if (isDev) {
+          return {
+            ...baseFormattedError,
+            path: error.path,
+            locations: error.locations,
+            extensions: error.extensions,
+            originalError: error.originalError,
+          };
+        }
+
+        return baseFormattedError;
       },
     };
   }
