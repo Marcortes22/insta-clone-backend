@@ -1,5 +1,3 @@
-export { AuditDomainModule } from './audit-domain.module';
-
 export { UserAuditLogModule } from './modules/user-audit-log/user-audit-log.module';
 export { UserFollowAuditLogModule } from './modules/user-follow-audit-log/user-follow-audit-log.module';
 export { PostAuditLogModule } from './modules/post-audit-log/post-audit-log.module';

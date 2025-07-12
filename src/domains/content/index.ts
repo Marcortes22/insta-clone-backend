@@ -1,5 +1,3 @@
-export { ContentDomainModule } from './content-domain.module';
-
 export { PostModule } from './modules/post/post.module';
 export { CommentModule } from './modules/comment/comment.module';
 export { PostMediaModule } from './modules/post-media/post-media.module';

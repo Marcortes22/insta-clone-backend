@@ -17,6 +17,7 @@
       "@domains/*": ["src/domains/*"],
       "@prisma/*": ["src/prisma/*"],
       "@shared/*": ["src/shared/*"],
+      "@config/*": ["src/config/*"],
       "@utils/*": ["src/utils/*"]
     },
     "incremental": true,
