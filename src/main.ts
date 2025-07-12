@@ -12,7 +12,6 @@ async function bootstrap() {
     }),
   });
 
-  //app.useGlobalFilters(new PrismaClientExceptionFilter());
   const logger = new Logger('Bootstrap');
   const configService = app.get(ConfigService);
   const port = configService.get('PORT') ?? 3000;
