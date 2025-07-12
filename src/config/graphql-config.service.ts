@@ -16,6 +16,7 @@ export class GraphqlConfigService implements GqlOptionsFactory {
       graphiql: isDev,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
+      includeStacktraceInErrorResponses: isDev,
       context: ({ req, res }) => ({
         request: req,
         response: res,
@@ -30,8 +31,6 @@ export class GraphqlConfigService implements GqlOptionsFactory {
           code: error.extensions?.code || 'INTERNAL_SERVER_ERROR',
         };
       },
-      // 🎯 Configuraciones adicionales
-      includeStacktraceInErrorResponses: isDev,
     };
   }
 }
