@@ -3,6 +3,7 @@ import { ConsoleLogger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core/nest-factory';
 import { Logger } from '@nestjs/common';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: new ConsoleLogger({
@@ -11,9 +12,10 @@ async function bootstrap() {
     }),
   });
 
+  //app.useGlobalFilters(new PrismaClientExceptionFilter());
   const logger = new Logger('Bootstrap');
   const configService = app.get(ConfigService);
-  const port = configService.get('PORT');
+  const port = configService.get('PORT') ?? 3000;
   await app.listen(port);
 
   logger.log(`🚀 Application is running on: http://localhost:${port}`);

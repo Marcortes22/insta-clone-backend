@@ -14,7 +14,7 @@
       "@/*": ["src/*"],
       "@app/*": ["src/app/*"],
       "@auth/*": ["src/auth/*"],
-      "@modules/*": ["src/modules/*"],
+      "@domains/*": ["src/domains/*"],
       "@prisma/*": ["src/prisma/*"],
       "@shared/*": ["src/shared/*"],
       "@utils/*": ["src/utils/*"]

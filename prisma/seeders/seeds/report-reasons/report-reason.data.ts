@@ -1,6 +1,6 @@
-import { report_reasonCreateInput } from '@/shared/prismagraphql/report-reason';
+import { Prisma } from '@prisma/client';
 
-export const reportReasons: report_reasonCreateInput[] = [
+export const reportReasons: Prisma.report_reasonCreateInput[] = [
   {
     reason: 'Spam',
     description: 'Unwanted commercial content or repetitive posts',

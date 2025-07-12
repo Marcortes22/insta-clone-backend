@@ -1,7 +1,7 @@
-import { locationCreateInput } from '@/shared/prismagraphql/location';
+import { Prisma } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 
-export const locations: locationCreateInput[] = [
+export const locations: Prisma.locationCreateInput[] = [
   {
     name: 'New York, NY',
     latitude: new Decimal(40.7128),

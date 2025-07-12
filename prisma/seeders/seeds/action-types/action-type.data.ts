@@ -1,6 +1,6 @@
-import { action_typeCreateInput } from '@/shared/prismagraphql/action-type';
+import { Prisma } from '@prisma/client';
 
-export const actionTypes: action_typeCreateInput[] = [
+export const actionTypes: Prisma.action_typeCreateInput[] = [
   {
     name: 'LOGIN',
   },

@@ -1,6 +1,6 @@
-import { roleCreateInput } from '@/shared/prismagraphql/role';
+import { Prisma } from '@prisma/client';
 
-export const roles: roleCreateInput[] = [
+export const roles: Prisma.roleCreateInput[] = [
   {
     name: 'ADMIN',
     description: 'System administrator with full access',

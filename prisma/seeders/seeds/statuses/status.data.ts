@@ -1,6 +1,6 @@
-import { statusCreateInput } from '@/shared/prismagraphql/status';
+import { Prisma } from '@prisma/client';
 
-export const statuses: statusCreateInput[] = [
+export const statuses: Prisma.statusCreateInput[] = [
   {
     name: 'ACTIVE',
   },

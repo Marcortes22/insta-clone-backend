@@ -2,6 +2,10 @@
 
 This is the backend for the Instagram clone, built with NestJS and GraphQL. It handles authentication, user management, posts, real-time messaging, content moderation, and audit logging.
 
+## 🏗️ Architecture
+
+### Domain-Driven Design (DDD)
+
 ---
 
 ## 📦 Core Modules

@@ -1,6 +1,6 @@
-import { liked_postCreateInput } from '@/shared/prismagraphql/liked-post';
+import { Prisma } from '@prisma/client';
 
-export const likedPosts: liked_postCreateInput[] = [
+export const likedPosts: Prisma.liked_postCreateInput[] = [
   {
     created_at: new Date(),
     post: {

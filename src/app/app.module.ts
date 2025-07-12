@@ -1,23 +1,32 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { SharedModule } from '@shared/shared.module';
-import { GenderModule } from '@modules/gender/gender.module';
+import { ConfigurationModule } from '../config/configuration.module';
+import { GraphqlConfigService } from '../config/graphql-config.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { join } from 'path';
+
+import { UserDomainModule } from '@domains/user';
+import { ContentDomainModule } from '@domains/content';
+import { CommunicationDomainModule } from '@domains/communication';
+import { NotificationDomainModule } from '@domains/notification';
+import { SystemDomainModule } from '@domains/system';
+import { AuditDomainModule } from '@domains/audit';
 
 @Module({
   imports: [
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      playground: process.env.ENV === 'dev',
-      debug: process.env.ENV === 'dev',
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      context: ({ req }) => ({ request: req }),
-    }),
-    ConfigModule.forRoot({ isGlobal: true }),
     SharedModule,
-    GenderModule,
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      imports: [ConfigurationModule],
+      useClass: GraphqlConfigService,
+    }),
+
+    UserDomainModule,
+    ContentDomainModule,
+    CommunicationDomainModule,
+    NotificationDomainModule,
+    SystemDomainModule,
+    AuditDomainModule,
   ],
   providers: [],
 })

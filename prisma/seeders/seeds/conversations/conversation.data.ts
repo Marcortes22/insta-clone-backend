@@ -1,16 +1,16 @@
-import { conversationCreateInput } from '@/shared/prismagraphql/conversation';
+import { Prisma } from '@prisma/client';
 
-export const conversations: conversationCreateInput[] = [
+export const conversations: Prisma.conversationCreateInput[] = [
   {
     is_group: false,
-    created_At: new Date(),
+    created_at: new Date(),
   },
   {
     is_group: false,
-    created_At: new Date(),
+    created_at: new Date(),
   },
   {
     is_group: true,
-    created_At: new Date(),
+    created_at: new Date(),
   },
 ];
